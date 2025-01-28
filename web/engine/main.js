@@ -5,23 +5,22 @@ import * as Scene from "./scene.js";
 let scene, camera, renderer;
 let loader, light, controls;
 
-function updateControls() {
-  let co = controls.target;
-  let ca = camera.position;
+function bind(val, min, max) {
+  return Math.max(min, Math.min(max, val));
+}
 
-  if (co.x < -10) co.x = -10;
-  if (ca.x < -10) ca.x = -10;
+function updateControls(min, max) {
+  ['x', 'y', 'z'].forEach(axis => {
+    camera.position[axis] = bind(camera.position[axis], min, max);
+    controls.target[axis] = bind(controls.target[axis], min, max);
+  });
 
-  co.y = 0;
-  if (ca.y < 1) ca.y = 1;
-  if (ca.y > 25) ca.y = 25;
-
-  if (co.z < -10) co.z = -10;
-  if (ca.z < -10) ca.z = -10;
+  controls.target.y = 0;
+  if (camera.position.y < 1) camera.position.y = 1;
 }
 
 function animate() {
-  updateControls();
+  updateControls(-10, 26);
   
   controls.update();
   renderer.render(scene, camera);

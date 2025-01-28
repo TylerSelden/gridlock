@@ -28,7 +28,7 @@ export class Box {
 export class Block {
   constructor(x, z) {
     let base = new Box(1, 0.05, 1, 0x666666);
-    let platform = new Box(0.925, 0.05, 0.925, 0xffffff, null, true);
+    let platform = new Box(0.925, 0.05, 0.925, 0xffffff);
     platform.position.y += 0.05;
 
     return new Group([ base, platform ], x, null, z);
