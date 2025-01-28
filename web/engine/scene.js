@@ -17,7 +17,7 @@ scene.add(light);
 
 
 scene.add(new Objects.Board(16, 16));
-scene.add(new Objects.Piece(15, 15, 0xd13d32, "Player", 3, 1, 8));
+scene.add(new Objects.Piece(5, 7, 0xd13d32, "Player", 3, 1, 8));
 
 
 
