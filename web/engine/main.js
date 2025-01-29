@@ -26,10 +26,10 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-function init() {
+export async function init() {
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
 
-  scene = Scene.scene;
+  scene = await Scene.init();
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   
@@ -52,5 +52,3 @@ function init() {
   renderer.setAnimationLoop(animate);
 
 }
-
-export { init };
