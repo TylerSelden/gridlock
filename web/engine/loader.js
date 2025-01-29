@@ -1,10 +1,10 @@
 const paths = [
-  "./assets/hpw.png",
-  "./assets/apw.png",
-  "./assets/rpw.png",
-  "./assets/hpb.png",
-  "./assets/apb.png",
-  "./assets/rpb.png"
+  "hpw.png",
+  "apw.png",
+  "rpw.png",
+  "hpb.png",
+  "apb.png",
+  "rpb.png"
 ]
 
 
@@ -20,16 +20,16 @@ export async function loadImgs(update) {
   let loaded = 0;
   const total = paths.length;
 
-  const imgs = await Promise.all(
-    paths.map(src =>
-      loadImg(src).then(img => {
-        loaded++;
-        update(loaded, total);
-        return img;
-      })
-    )
-  );
+  let imgs = {};
 
+  await Promise.all(
+    paths.map(async (path) => {
+      const img = await loadImg(`./assets/${path}`);
+      imgs[path] = img;
+      loaded++;
+      update(loaded, total);
+    })
+  );
 
   return imgs;
 }

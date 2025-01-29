@@ -80,12 +80,8 @@ class TextureGenerator {
     this.ctx.fillText(text, x, y);
   }
 
-  img(src, x, y, w, h) {
-    let img = new Image();
-    img.onload = () => {
-      this.ctx.drawImage(img, x - w/2, y - h/2, w, h);
-    };
-    img.src = src;
+  img(img, x, y, w, h) {
+    this.ctx.drawImage(img, x - w/2, y - h/2, w, h);
   }
 
   getTexture() {
@@ -116,15 +112,14 @@ class PieceTexture {
     const is = s / 10;
 
 
-    gen.img(`./assets/hp${ic}.png`, x - is / 2, y, is, is);
+    gen.img(window.Game.textures[`hp${ic}.png`], x - is / 2, y, is, is);
     gen.text(hp, x + is / 2, y, c, is, "left");
-
     x += dx;
-    gen.img(`./assets/ap${ic}.png`, x - is / 2, y, is, is);
+    gen.img(window.Game.textures[`ap${ic}.png`], x - is / 2, y, is, is);
     gen.text(ap, x + is / 2, y, c, is, "left");
 
     x += dx;
-    gen.img(`./assets/rp${ic}.png`, x - is / 2, y, is, is);
+    gen.img(window.Game.textures[`rp${ic}.png`], x - is / 2, y, is, is);
     gen.text(rp, x + is / 2, y, c, is, "left");
 
     return gen.getTexture();
