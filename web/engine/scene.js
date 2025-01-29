@@ -2,14 +2,6 @@ import * as THREE from "three";
 import * as Objects from "./objects.js";
 import * as Loader from "./loader.js";
 
-const textures = [
-  "./assets/hpw.png",
-  "./assets/apw.png",
-  "./assets/rpw.png",
-  "./assets/hpb.png",
-  "./assets/apb.png",
-  "./assets/rpb.png"
-]
 
 export async function init() {
   const scene = new THREE.Scene();
@@ -31,7 +23,7 @@ export async function init() {
   scene.add(dirLight.target);
   scene.add(light);
 
-  scene.userData.textures = await Loader.loadImgs(textures, (loaded, total) => {
+  scene.userData.textures = await Loader.loadImgs((loaded, total) => {
     document.getElementById("loading").innerText = `Loading... (${loaded} / ${total})`;
   });
 

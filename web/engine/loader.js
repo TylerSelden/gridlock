@@ -1,3 +1,13 @@
+const paths = [
+  "./assets/hpw.png",
+  "./assets/apw.png",
+  "./assets/rpw.png",
+  "./assets/hpb.png",
+  "./assets/apb.png",
+  "./assets/rpb.png"
+]
+
+
 function loadImg(src) {
   return new Promise(resolve => {
     const img = new Image();
@@ -6,7 +16,7 @@ function loadImg(src) {
   });
 }
 
-export async function loadImgs(paths, update) {
+export async function loadImgs(update) {
   let loaded = 0;
   const total = paths.length;
 
