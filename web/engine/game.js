@@ -23,7 +23,8 @@ export class Game {
 
     this.scene.add(new Objects.Board(s, s));
     this.players.push(new Objects.Player(5, 7, 0xd13d31, "Player", 3, 1, 8));
-    this.scene.add(this.players[0].mesh)
+    this.scene.add(this.players[0].obj);
+
 
     document.getElementById("loading").classList.add("hidden");
   }

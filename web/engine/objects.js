@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as THREEx from "./lib/threex.js"
 
 export class Group {
   constructor(items, x = 0, y = 0, z = 0) {
@@ -49,26 +50,22 @@ export class Board {
 export class Piece {
   constructor(x, z, c, name, hp, ap, rp) {
     let box = new Box(0.85, 0.4, 0.85, c, true);
+    let light = new SpotLight(0, 0);
 
-    let group = new Group([ box ], x, 0.275, z);
+    let group = new Group([ box, light.obj, light.obj.target, light.cone ], x, 0.275, z);
     return group;
   }
 }
 
 export class Player {
   constructor(x, z, c, name, hp, ap, rp) {
-    this.x = x;
-    this.z = z;
     this.c = c;
     this.name = name;
-    this.hp = hp;
-    this.ap = ap;
-    this.rp = rp;
 
-    this.mesh = new Piece(x, z, c, name, hp, ap, rp);
+    this.obj = new Piece(x, z, c, name, hp, ap, rp);
     this.gen = new TextureGenerator(1024, 1024, c);
 
-    this.update();
+    this.update(x, z, hp, ap, rp);
   }
 
   update(x, z, hp, ap, rp) {
@@ -78,12 +75,12 @@ export class Player {
     if (typeof(ap) === "number") this.ap = ap;
     if (typeof(rp) === "number") this.rp = rp;
 
-    this.mesh.position.x = this.x;
-    this.mesh.position.z = this.z;
+    this.obj.position.x = this.x;
+    this.obj.position.z = this.z;
     let tex = new PieceTexture(this.gen, this.name, this.hp, this.ap, this.rp, this.c);
 
     // change texture
-    this.mesh.traverse(child => {
+    this.obj.traverse(child => {
       if (child.isMesh) {
         child.material[2] = new THREE.MeshStandardMaterial({ map: tex });
       }
@@ -160,5 +157,36 @@ class PieceTexture {
     gen.text(rp, x + is / 2, y, c, is, "left");
 
     return gen.getTexture();
+  }
+}
+
+class SpotLight {
+  constructor(x, z) {
+    let light = new THREE.SpotLight(0xffffff);
+    this.obj = light;
+
+    light.target = new THREE.Object3D();
+    light.position.set(x, 4, z);
+    light.target.position.set(x, 0, z);
+
+    light.angle = Math.PI / 10;
+    light.penumbra = 0.5;
+    light.intensity = 0;
+    light.distance = 5;
+    light.decay = 0.5;
+
+    let mat = new THREEx.VolumetricSpotLightMaterial(this.obj);
+    const geo = new THREE.CylinderGeometry( 0, 1.5, 4.5, 64, 20, true); 
+    this.cone = new THREE.Mesh(geo, mat);
+    this.cone.position.set(x, 2, z);
+    this.cone.visible = false;
+  }
+  on() {
+    this.obj.intensity = Math.PI;
+    this.cone.visible = true;
+  }
+  off() {
+    this.obj.intensity = 0;
+    this.cone.visible = false;
   }
 }
