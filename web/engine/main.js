@@ -9,7 +9,7 @@ function bind(val, min, max) {
   return Math.max(min, Math.min(max, val));
 }
 
-function updateControls(min, max) {
+function clampCamera(min, max) {
   ['x', 'y', 'z'].forEach(axis => {
     camera.position[axis] = bind(camera.position[axis], min, max);
     controls.target[axis] = bind(controls.target[axis], min, max);
@@ -20,7 +20,7 @@ function updateControls(min, max) {
 }
 
 function animate() {
-  updateControls(-10, 26);
+  clampCamera(-10, 26);
   
   controls.update();
   renderer.render(scene, camera);
@@ -29,16 +29,15 @@ function animate() {
 export async function init() {
   window.Game = await Game.Game.create();
   window.Game.init(16);
+
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
-
   scene = window.Game.scene;
-
   renderer = new THREE.WebGLRenderer({ antialias: true });
-  
+
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Use soft shadows (optional)
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.physicallyCorrectLights = true;
-  
+
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x87ceeb);
   document.body.appendChild(renderer.domElement);
@@ -49,8 +48,5 @@ export async function init() {
   controls.target.set(5, 0, 7);
   controls.update();
 
-
-
   renderer.setAnimationLoop(animate);
-
 }

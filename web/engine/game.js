@@ -7,6 +7,7 @@ import * as Scene from "./scene.js";
 export class Game {
   constructor(textures) {
     this.textures = textures;
+    this.players = [];
   }
   static async create() {
     // get async data beforehand
@@ -21,10 +22,10 @@ export class Game {
     this.scene = this.scene(s);
 
     this.scene.add(new Objects.Board(s, s));
-    this.scene.add(new Objects.Piece(5, 7, 0xd13d32, "Player", 3, 1, 8));
+    this.players.push(new Objects.Player(5, 7, 0xd13d31, "Player", 3, 1, 8));
+    this.scene.add(this.players[0].mesh)
 
     document.getElementById("loading").classList.add("hidden");
-
   }
 
   scene(s) {
