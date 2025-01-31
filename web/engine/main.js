@@ -21,7 +21,7 @@ function clampCamera(min, max) {
 
 function animate() {
   //clampCamera(-10, 26);
-  
+ 
   controls.update();
   renderer.render(scene, camera);
 }

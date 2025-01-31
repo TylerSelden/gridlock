@@ -47,22 +47,15 @@ export class Board {
   }
 }
 
-export class Piece {
-  constructor(x, z, c, name, hp, ap, rp) {
-    let box = new Box(0.85, 0.4, 0.85, c, true);
-    let light = new SpotLight(0, 0);
-
-    let group = new Group([ box, light.obj, light.obj.target, light.cone ], x, 0.275, z);
-    return group;
-  }
-}
 
 export class Player {
   constructor(x, z, c, name, hp, ap, rp) {
     this.c = c;
     this.name = name;
 
-    this.obj = new Piece(x, z, c, name, hp, ap, rp);
+    let box = new Box(0.85, 0.4, 0.85, c, true);
+    this.light = new SpotLight(0, 0);
+    this.obj = new Group([ box, this.light.obj, this.light.obj.target, this.light.cone ], x, 0.275, z);
     this.gen = new TextureGenerator(1024, 1024, c);
 
     this.update(x, z, hp, ap, rp);
@@ -176,7 +169,7 @@ class SpotLight {
     light.decay = 0.5;
 
     let mat = new THREEx.VolumetricSpotLightMaterial(this.obj);
-    const geo = new THREE.CylinderGeometry( 0, 1.5, 4.5, 64, 20, true); 
+    const geo = new THREE.CylinderGeometry(0, 1.5, 4.4, 64, 20, true);
     this.cone = new THREE.Mesh(geo, mat);
     this.cone.position.set(x, 2, z);
     this.cone.visible = false;
@@ -188,5 +181,9 @@ class SpotLight {
   off() {
     this.obj.intensity = 0;
     this.cone.visible = false;
+  }
+  toggle() {
+    if (this.cone.visible) return this.off();
+    this.on();
   }
 }
