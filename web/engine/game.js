@@ -10,6 +10,7 @@ export class Game {
   constructor(textures) {
     this.textures = textures;
     this.players = [];
+    this.time = 0;
   }
   static async create() {
     // get async data beforehand
@@ -27,7 +28,8 @@ export class Game {
     this.renderer = this.createRenderer();
     this.camera = this.createCamera(s);
     this.controls = this.createControls(s);
-    console.log(this.controls);
+
+    this.size = s;
 
 
     this.players.push(new Objects.Player(5, 7, 0xd13d31, "Player", 3, 1, 8));
@@ -49,6 +51,11 @@ export class Game {
     scene.add(this.lights.ambient);
     scene.add(this.lights.dir.target);
     scene.add(this.lights.dir);
+
+    let geo = new THREE.SphereGeometry(1, 32, 16);
+    let mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    this.test = new THREE.Mesh(geo, mat);
+    scene.add(this.test);
 
     return scene;
   }
@@ -86,7 +93,7 @@ export class Game {
 
   lights(s) {
     let ambient = new THREE.AmbientLight(0xffffff, 0.8);
-    let dir = new THREE.DirectionalLight(0xffffff, 1.9);
+    let dir = new THREE.DirectionalLight(0xffffff, 2);
 
     dir.position.set(s * 2, s, s * 2)
     dir.target = new THREE.Object3D();
@@ -97,6 +104,38 @@ export class Game {
     dir.shadow.mapSize.height = 10000;
 
     return { ambient, dir };
+  }
+
+  lightCycle() {
+    let a = this.time * Math.PI / 180;
+    let s = this.size;
+    let h = s / 2;
+
+    let x = s * Math.cos(a) + h;
+    let y = s * Math.sin(a);
+    let z = h * Math.cos(a) + h;
+    let i = Math.max(y / h, 0);
+
+    this.lights.dir.position.set(x, y, z);
+    this.lights.dir.intensity = i;
+    this.lights.ambient.intensity = Math.max(i / 4, 0.025);
+    this.test.position.set(x, y, z);
+
+    this.spotLightsOn();
+    if (i > 0.8) this.spotLightsOff()
+
+    this.time = (this.time + 1) % 360;
+  }
+
+  spotLightsOn() {
+    for (let player of this.players) {
+      player.light.on();
+    }
+  }
+  spotLightsOff() {
+    for (let player of this.players) {
+      player.light.off();
+    }
   }
 
   render() {

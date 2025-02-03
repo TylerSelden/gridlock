@@ -175,7 +175,7 @@ class SpotLight {
     this.cone.visible = false;
   }
   on() {
-    this.obj.intensity = Math.PI;
+    this.obj.intensity = Math.PI * 2;
     this.cone.visible = true;
   }
   off() {
