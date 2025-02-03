@@ -70,6 +70,7 @@ export class Player {
 
     this.obj.position.x = this.x;
     this.obj.position.z = this.z;
+    THREEx.updatePos(this.x, 4, this.z, this.light.cone.material)
     let tex = new PieceTexture(this.gen, this.name, this.hp, this.ap, this.rp, this.c);
 
     // change texture
@@ -168,10 +169,10 @@ class SpotLight {
     light.distance = 5;
     light.decay = 0.5;
 
-    let mat = new THREEx.VolumetricSpotLightMaterial(this.obj);
-    const geo = new THREE.CylinderGeometry(0, 1.5, 4.4, 64, 20, true);
+    let mat = new THREEx.VolumetricSpotLightMaterial();
+    const geo = new THREE.CylinderGeometry(0, 1.5, 8.4, 64, 20, true);
     this.cone = new THREE.Mesh(geo, mat);
-    this.cone.position.set(x, 2, z);
+    this.cone.position.set(x, 4, z);
     this.cone.visible = false;
   }
   on() {

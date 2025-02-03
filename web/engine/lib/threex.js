@@ -1,71 +1,73 @@
 import * as THREE from "three";
 
 export function VolumetricSpotLightMaterial() {
-	// 
-	var vertexShader	= [
-		'varying vec3 vNormal;',
-		'varying vec3 vWorldPosition;',
-		
-		'void main(){',
-			'// compute intensity',
-			'vNormal		= normalize( normalMatrix * normal );',
+    let vertexShader = `
+        varying vec3 vNormal;
+        varying vec3 vWorldPosition;
 
-			'vec4 worldPosition	= modelMatrix * vec4( position, 1.0 );',
-			'vWorldPosition		= worldPosition.xyz;',
+        void main() {
+            // compute intensity
+            vNormal = normalize(normalMatrix * normal);
 
-			'// set gl_Position',
-			'gl_Position	= projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-		'}',
-	].join('\n')
-	var fragmentShader	= [
-		'varying vec3		vNormal;',
-		'varying vec3		vWorldPosition;',
+            vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+            vWorldPosition = worldPosition.xyz;
 
-		'uniform vec3		lightColor;',
+            // set gl_Position
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `;
 
-		'uniform vec3		spotPosition;',
+    let fragmentShader = `
+        varying vec3 vNormal;
+        varying vec3 vWorldPosition;
 
-		'uniform float		attenuation;',
-		'uniform float		anglePower;',
+        uniform vec3 lightColor;
+        uniform vec3 spotPosition;
+        uniform float attenuation;
+        uniform float anglePower;
 
-		'void main(){',
-			'float intensity;',
+        void main() {
+            float intensity;
 
-			'intensity	= distance(vWorldPosition, spotPosition)/attenuation;',
-			'intensity	= 1.0 - clamp(intensity, 0.0, 1.0);',
+            intensity = distance(vWorldPosition, spotPosition) / attenuation;
+            intensity = 1.0 - clamp(intensity, 0.0, 1.0);
 
-			'vec3 normal	= vec3(vNormal.x, vNormal.y, abs(vNormal.z));',
-			'float angleIntensity	= pow( dot(normal, vec3(0.0, 0.0, 1.0)), anglePower );',
-			'intensity	= intensity * angleIntensity;',		
+            vec3 normal = vec3(vNormal.x, vNormal.y, abs(vNormal.z));
+            float angleIntensity = pow(dot(normal, vec3(0.0, 0.0, 1.0)), anglePower);
+            intensity = intensity * angleIntensity;
 
-			'gl_FragColor	= vec4( lightColor, intensity);',
-		'}',
-	].join('\n')
+            gl_FragColor = vec4(lightColor, intensity);
+        }
+    `;
 
-	var material	= new THREE.ShaderMaterial({
-		uniforms: { 
-			attenuation	: {
-				type	: "f",
-				value	: 11
-			},
-			anglePower	: {
-				type	: "f",
-				value	: 4
-			},
-			spotPosition		: {
-				type	: "v3",
-				value	: new THREE.Vector3( 0, 0, 0 )
-			},
-			lightColor	: {
-				type	: "c",
-				value	: new THREE.Color('white')
-			},
-		},
-		vertexShader	: vertexShader,
-		fragmentShader	: fragmentShader,
-		transparent	: true,
-		depthWrite	: false,
-	});
-	return material
+    let material = new THREE.ShaderMaterial({
+        uniforms: {
+            attenuation: {
+                type: "f",
+                value: 4
+            },
+            anglePower: {
+                type: "f",
+                value: 4
+            },
+            spotPosition: {
+                type: "v3",
+                value: new THREE.Vector3()
+            },
+            lightColor: {
+                type: "c",
+                value: new THREE.Color('white')
+            },
+        },
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader,
+        transparent: true,
+        depthWrite: false,
+    });
+
+    return material;
 }
 
+export function updatePos(x, y, z, mat) {
+  mat.uniforms.spotPosition.value.set(x, y, z);
+}

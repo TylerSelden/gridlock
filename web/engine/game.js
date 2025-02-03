@@ -22,7 +22,7 @@ export class Game {
   }
 
   init(s) {
-    this.scene = this.scene(s);
+    this.scene = this.createScene(s);
     this.scene.add(new Objects.Board(s, s));
 
     this.renderer = this.createRenderer();
@@ -32,8 +32,8 @@ export class Game {
     this.size = s;
 
 
-    this.players.push(new Objects.Player(5, 7, 0xd13d31, "Player", 3, 1, 8));
-    this.scene.add(this.players[0].obj);
+    this.createPlayers(12);
+    for (let player of this.players) this.scene.add(player.obj);
 
     // arrow notation to preserve `this`
     this.renderer.setAnimationLoop(() => {
@@ -44,10 +44,10 @@ export class Game {
     document.getElementById("loading").classList.add("hidden");
   }
 
-  scene(s) {
+  createScene(s) {
     let scene = new THREE.Scene();
 
-    this.lights = this.lights(s);
+    this.lights = this.createLights(s);
     scene.add(this.lights.ambient);
     scene.add(this.lights.dir.target);
     scene.add(this.lights.dir);
@@ -91,7 +91,17 @@ export class Game {
     return renderer;
   }
 
-  lights(s) {
+  createPlayers(n) {
+    for (let i = 0; i < n; i++) {
+      let x = Math.floor(Math.random() * 16);
+      let y = Math.floor(Math.random() * 16);
+      let c = Math.floor(Math.random() * 0xffffff);
+      let player = new Objects.Player(x, y, c, `Player ${i}`, 3, 1, 8);
+      this.players.push(player);
+    }
+  }
+
+  createLights(s) {
     let ambient = new THREE.AmbientLight(0xffffff, 0.8);
     let dir = new THREE.DirectionalLight(0xffffff, 2);
 
@@ -122,9 +132,10 @@ export class Game {
     this.test.position.set(x, y, z);
 
     this.spotLightsOn();
-    if (i > 0.8) this.spotLightsOff()
+    if (i > 0.7) this.spotLightsOff()
+    this.renderer.setClearColor(0);
 
-    this.time = (this.time + 1) % 360;
+//    this.time = (this.time + 1) % 360;
   }
 
   spotLightsOn() {
