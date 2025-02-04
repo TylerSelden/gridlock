@@ -135,7 +135,7 @@ export class Game {
     if (i > 0.7) this.spotLightsOff()
     this.renderer.setClearColor(0);
 
-//    this.time = (this.time + 1) % 360;
+    this.time = (this.time + 1) % 360;
   }
 
   spotLightsOn() {
