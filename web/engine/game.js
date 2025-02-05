@@ -116,6 +116,40 @@ export class Game {
     return { ambient, dir };
   }
 
+  lightColors() {
+    const phases = [
+      { color: new THREE.Color(0x000020), len: 30  },
+      { color: new THREE.Color(0xeeeeee), len: 140 },
+      { color: new THREE.Color(0xeeeeee), len: 10  },
+      { color: new THREE.Color(0x000020), len: 180 },
+    ];
+
+    let t = this.time;
+    let c;
+    let start = 0;
+
+    for (let i = 0; i < phases.length; i++) {
+      let { color, len } = phases[i];
+
+      if (t >= start && t < start + len) {
+        let n = (i + 1) % phases.length;
+        let nt = (t - start) / len;
+
+        c = color.lerp(phases[n].color, nt);
+        break;
+      }
+      start += len;
+    }
+
+    this.lights.ambient.color.set(c);
+    this.lights.dir.color.set(c);
+
+    const black = new THREE.Color(0);
+    const blue = new THREE.Color(0x87ceeb);
+    const i = Math.max(0.001, 1 - Math.abs((t - 90) / 90));
+    this.renderer.setClearColor(black.lerp(blue, i));
+
+  }
   lightCycle() {
     let a = this.time * Math.PI / 180;
     let s = this.size;
@@ -127,15 +161,15 @@ export class Game {
     let i = Math.max(y / h, 0);
 
     this.lights.dir.position.set(x, y, z);
-    this.lights.dir.intensity = i;
-    this.lights.ambient.intensity = Math.max(i / 4, 0.025);
+    this.lights.dir.intensity = Math.max(i, 0.5);
+    this.lights.ambient.intensity = Math.max(i / 4, 0.4);
+    this.lightColors();
     this.test.position.set(x, y, z);
 
     this.spotLightsOn();
     if (i > 0.7) this.spotLightsOff()
-    this.renderer.setClearColor(0);
 
-    this.time = (this.time + 1) % 360;
+    this.time = (this.time + 0.25) % 360;
   }
 
   spotLightsOn() {
