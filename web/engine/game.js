@@ -52,11 +52,6 @@ export class Game {
     scene.add(this.lights.dir.target);
     scene.add(this.lights.dir);
 
-    let geo = new THREE.SphereGeometry(1, 32, 16);
-    let mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    this.test = new THREE.Mesh(geo, mat);
-    scene.add(this.test);
-
     return scene;
   }
 
@@ -79,6 +74,7 @@ export class Game {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.physicallyCorrectLights = true;
+    renderer.shadowMap.autoUpdate = false;
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     window.addEventListener("resize", () => {
@@ -110,8 +106,13 @@ export class Game {
     dir.target.position.set(s / 2, 0, s / 2);
 
     dir.castShadow = true;
-    dir.shadow.mapSize.width = 10000;
-    dir.shadow.mapSize.height = 10000;
+    dir.shadow.mapSize.width = s * 500;
+    dir.shadow.mapSize.height = s * 500;
+
+    dir.shadow.camera.left = -s;
+    dir.shadow.camera.right = s;
+    dir.shadow.camera.top = s;
+    dir.shadow.camera.bottom = -s;
 
     return { ambient, dir };
   }
@@ -164,12 +165,12 @@ export class Game {
     this.lights.dir.intensity = Math.max(i, 0.5);
     this.lights.ambient.intensity = Math.max(i / 4, 0.4);
     this.lightColors();
-    this.test.position.set(x, y, z);
 
     this.spotLightsOn();
     if (i > 0.7) this.spotLightsOff()
 
     this.time = (this.time + 0.25) % 360;
+    this.renderer.shadowMap.needsUpdate = true;
   }
 
   spotLightsOn() {
