@@ -1,19 +1,17 @@
 let Global = require("./global.js");
 let Actions = require("./actions.js");
-const { send } = require("./misc.js");
+const { send, term } = require("./misc.js");
 
 function serverMain(req) {
   let conn = req.accept(null, req.origin);
   Global.clients.push(conn);
-  Actions.state(conn);
 
   conn.on("message", (msg) => {
     try {
       msg = JSON.parse(msg.utf8Data);
       Actions[msg.type](conn, msg);
     } catch(e) {
-      send(conn, "err", "Something went wrong");
-      conn.close();
+      term(conn, "Something went wrong.");
       console.error(e);
     }
   })

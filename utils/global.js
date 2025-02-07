@@ -14,8 +14,8 @@ function setTime() {
 function getPlayers() {
   return players.map(({ secrets, ...r}) => r);
 }
-function getPlayer(i) {
-  return getPlayers()[i];
+function getPlayer(id) {
+  return players.find(player => player.id === id);
 }
 
 // generate players
@@ -29,6 +29,8 @@ for (let i of Config.players) {
   let key = dev[i] || Crypto.randomUUID();
 
   players.push({
+    id: i,
+    online: false,
     x: Math.floor(Math.random() * 16),
     y: Math.floor(Math.random() * 16),
     c: Math.floor(Math.random() * 0xffffff),
@@ -38,11 +40,12 @@ for (let i of Config.players) {
     rp: 8,
     secrets: {
       key,
-      messages: {}
+      msgs: {}
     }
   });
 
   console.log(`  |- ${i}: ${key}
+  |    ${players[players.length - 1].id}
   |`)
 }
 console.log(`__|

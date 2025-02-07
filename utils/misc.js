@@ -10,4 +10,16 @@ function sendAll(type, data) {
   }
 }
 
-module.exports = { send, sendAll };
+function term(conn, reason) {
+  send(conn, "err", reason);
+
+  let player = Global.players.find(player => player.secrets.conn === conn);
+  if (player) {
+    delete player.secrets.conn;
+    player.online = false;
+  }
+
+  conn.close();
+}
+
+module.exports = { send, sendAll, term };
