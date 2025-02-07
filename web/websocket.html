@@ -107,10 +107,12 @@
     var socket;
     var messageHistory = [];
     var historyIndex = -1;
+    var beautify = true;
 
     // Load message history from localStorage
     if (localStorage.getItem('messageHistory')) {
       messageHistory = JSON.parse(localStorage.getItem('messageHistory'));
+      historyIndex = messageHistory.length;
     }
 
     function connectWebSocket() {
@@ -124,6 +126,11 @@
 
       socket.onmessage = function (event) {
         var message = event.data;
+        if (beautify) {
+          try {
+            message = JSON.stringify(JSON.parse(message), null, 2);
+          } catch {};
+        }
         console.log(message);
         displayMessage(message);
       };
@@ -167,9 +174,11 @@
     }
 
     function handleKeyDown(event) {
+      if (event.shiftKey) return;
+
       var messageInput = document.getElementById("messageInput");
 
-      if (event.key === "Enter" && !event.shiftKey) {
+      if (event.key === "Enter") {
         event.preventDefault();
         sendMessage();
       } else if (event.key === "ArrowUp") {

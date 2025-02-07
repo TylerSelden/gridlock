@@ -12,7 +12,7 @@ if (Config.ssl) {
   }
 }
 
-const httpServer = (Config.https) ? HTTPS.createServer(options) : HTTP.createServer();
+const httpServer = (Config.ssl) ? HTTPS.createServer(options) : HTTP.createServer();
 const server = new WebSocketServer({ httpServer });
 
 module.exports = { httpServer, server };

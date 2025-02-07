@@ -2,10 +2,11 @@
 
 const Config = require("./secrets/config.json");
 const { httpServer, server } = require("./utils/server.js");
+const serverMain = require("./utils/server_main.js");
+const { sendAll } = require("./utils/misc.js");
+let Global = require("./utils/global.js");
 
-server.on("request", () => {
-  console.log("yea");
-});
+server.on("request", serverMain);
 
 httpServer.listen(Config.port);
 
@@ -15,3 +16,8 @@ console.log(`Starting Server...
   Started: ${new Date(Date.now()).toLocaleString()}
 Server started!
 `);
+
+setInterval(() => {
+  Global.time = Global.setTime();
+  sendAll("time", Global.time);
+}, 60000);
