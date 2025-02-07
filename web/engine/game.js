@@ -31,6 +31,11 @@ export class Game {
 
     this.size = s;
 
+    window.addEventListener("resize", () => {
+      this.camera.aspect = window.innerWidth / window.innerHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
+    })
 
     this.createPlayers(12);
     for (let player of this.players) this.scene.add(player.obj);
