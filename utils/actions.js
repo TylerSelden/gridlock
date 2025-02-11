@@ -15,7 +15,43 @@ function auth(conn, msg) {
   return player;
 }
 
+function privMsg(p, r, msg) {
+  let pm = p.secrets.msgs;
+  let rm = r.secrets.msgs;
+
+  if (!pm[r.id]) pm[r.id] = [];
+  if (!rm[p.id]) rm[p.id] = [];
+  pm[r.id].push(`${r.name}: ${msg}`);
+  rm[p.id].push(`${p.name}: ${msg}`);
+
+  send(p.secrets.conn, "msg", {
+    id: r.id,
+    msg
+  });
+  if (r.online) send(r.secrets.conn, "msg", {
+    id: p.id,
+    msg
+  })
+}
+
+function globalMsg(p, msg) {
+  let pm = p.secrets.msgs;
+  msg = `${p.name}: ${msg}`;
+
+  Global.players.forEach(r => {
+    let rm = r.secrets.msgs;
+    if (!rm.global) rm.global = [];
+    rm.global.push(msg);
+ 
+    if (r.online) send(r.secrets.conn, "msg", {
+      id: p.id,
+      msg
+    });
+  });
+}
+
 const actions = {
+  //// remove ping function
   ping: (conn, msg) => {
     console.log(msg);
     send(conn, "ping", "pong");
@@ -40,18 +76,10 @@ const actions = {
   msg: (conn, msg) => {
     let player = auth(conn, msg);
     if (!player) return term(conn, "Invalid key");
-
     let recipient = Global.getPlayer(msg.recipient);
 
-    let pmsgs = player.secrets.msgs;
-    let rmsgs = recipient.secrets.msgs;
-    if (!rmsgs[player.id]) rmsgs[player.id] = [];
-    if (!pmsgs[recipient.id]) pmsgs[recipient.id] = [];
-    rmsgs[player.id].push(`${player.name}: ${msg.msg}`);
-    pmsgs[recipient.id].push(`${recipient.name}: ${msg.msg}`);
-
-    send(conn, "msg", msg.msg);
-    if (recipient.online) send(recipient.secrets.conn, "msg", msg.msg);
+    if (recipient) return privMsg(player, recipient, msg.msg);
+    globalMsg(player, msg.msg);
   }
 }
 

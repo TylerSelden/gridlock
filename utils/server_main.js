@@ -11,6 +11,7 @@ function serverMain(req) {
       msg = JSON.parse(msg.utf8Data);
       Actions[msg.type](conn, msg);
     } catch(e) {
+      //// remove errors
       term(conn, "Something went wrong.");
       console.error(e);
     }

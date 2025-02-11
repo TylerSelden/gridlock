@@ -23,11 +23,13 @@ console.log(`Join codes:
   |`);
 
 let dev = {
-  "Test": "kcrmnq"
+  "Test": "kcrmnq",
+  "Test 2": "kcrmn2"
 }
 for (let i of Config.players) {
   let key = dev[i] || Crypto.randomUUID();
 
+  //// remove dev above, make id random uuid
   players.push({
     id: i,
     online: false,
