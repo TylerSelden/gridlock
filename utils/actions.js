@@ -1,4 +1,4 @@
-const { send, term } = require("./misc.js");
+const { send, sendAllPlayers, term } = require("./misc.js");
 let Global = require("./global.js");
 
 function auth(conn, msg) {
@@ -38,15 +38,15 @@ function globalMsg(p, msg) {
   let pm = p.secrets.msgs;
   msg = `${p.name}: ${msg}`;
 
-  Global.players.forEach(r => {
+  for (let r of Global.players) {
     let rm = r.secrets.msgs;
     if (!rm.global) rm.global = [];
     rm.global.push(msg);
- 
-    if (r.online) send(r.secrets.conn, "msg", {
-      id: p.id,
-      msg
-    });
+  };
+
+  sendAllPlayers("msg", {
+    id: p.id,
+    msg
   });
 }
 
@@ -76,6 +76,8 @@ const actions = {
   msg: (conn, msg) => {
     let player = auth(conn, msg);
     if (!player) return term(conn, "Invalid key");
+    
+    if (player.id === msg.recipient) return;
     let recipient = Global.getPlayer(msg.recipient);
 
     if (recipient) return privMsg(player, recipient, msg.msg);
