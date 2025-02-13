@@ -13,13 +13,14 @@ export class Group {
 }
 
 export class Box {
-  constructor(w, h, d, c, shadow) {
+  constructor(w, h, d, c, shadow, name) {
     const geometry = new THREE.BoxGeometry(w, h, d);
     let materials = new Array(6).fill(new THREE.MeshStandardMaterial({ color: c }));
 
     let mesh = new THREE.Mesh( geometry, materials );
     if (shadow) mesh.castShadow = true;
     mesh.receiveShadow = true;
+    mesh.name = name;
 
     return mesh;
   }
@@ -28,7 +29,7 @@ export class Box {
 export class Block {
   constructor(x, z) {
     let base = new Box(1, 0.05, 1, 0x666666);
-    let platform = new Box(0.925, 0.05, 0.925, 0xffffff);
+    let platform = new Box(0.925, 0.05, 0.925, 0xffffff, false, "block");
     platform.position.y += 0.05;
 
     return new Group([ base, platform ], x, null, z);
@@ -53,7 +54,7 @@ export class Player {
     this.c = c;
     this.name = name;
 
-    let box = new Box(0.85, 0.4, 0.85, c, true);
+    let box = new Box(0.85, 0.4, 0.85, c, true, "player");
     this.light = new SpotLight(0, 0);
     this.obj = new Group([ box, this.light.obj, this.light.obj.target, this.light.cone ], x, 0.275, z);
     this.gen = new TextureGenerator(1024, 1024, c);

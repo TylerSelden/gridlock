@@ -4,6 +4,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import * as Objects from "./objects.js";
 import * as Loader from "./loader.js";
 import * as Scene from "./scene.js";
+import * as Events from "./events.js";
 
 
 export class Game {
@@ -34,11 +35,7 @@ export class Game {
 
     this.size = s;
 
-    window.addEventListener("resize", () => {
-      this.camera.aspect = window.innerWidth / window.innerHeight;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    Events.init(this.renderer.domElement);
 
     for (let p of players) {
       p = new Objects.Player(p.x, p.z, p.c, p.name, p.hp, p.ap, p.rp);
@@ -48,7 +45,7 @@ export class Game {
 
     // arrow notation to preserve `this`
     this.renderer.setAnimationLoop(() => {
-      this.render()
+      this.render();
     });
 
 
@@ -77,6 +74,8 @@ export class Game {
     let controls = new OrbitControls(this.camera, this.renderer.domElement);
     controls.target.set(s / 2, 0, s / 2);
     controls.update();
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.1;
 
     return controls;
   }
