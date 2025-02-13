@@ -48,7 +48,8 @@ function getMesh(x, y) {
       obj.parent.visible = !obj.parent.visible;
       break;
     } else if (obj.name === "block") {
-      obj.visible = !obj.visible;
+      console.log(obj.userData);
+      obj.material.forEach(material => material.color.set(0xee2222))
       break;
     }
   }

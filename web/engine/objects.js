@@ -31,6 +31,7 @@ export class Block {
     let base = new Box(1, 0.05, 1, 0x666666);
     let platform = new Box(0.925, 0.05, 0.925, 0xffffff, false, "block");
     platform.position.y += 0.05;
+    platform.userData = { x, z };
 
     return new Group([ base, platform ], x, null, z);
   }
