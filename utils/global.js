@@ -17,6 +17,10 @@ function getPlayers() {
 function getPlayer(id) {
   return players.find(player => player.id === id);
 }
+function getPlayerClean(id) {
+  let player = getPlayer(id);
+  return (({secrets, ...r}) => r)(player);
+}
 
 // generate players
 console.log(`Join codes:
@@ -34,7 +38,7 @@ for (let i of Config.players) {
     id: i,
     online: false,
     x: Math.floor(Math.random() * 16),
-    y: Math.floor(Math.random() * 16),
+    z: Math.floor(Math.random() * 16),
     c: Math.floor(Math.random() * 0xffffff),
     name: i,
     hp: 3,
@@ -54,4 +58,4 @@ console.log(`__|
 `);
 
 
-module.exports = { clients, players, time, setTime, getPlayers, getPlayer };
+module.exports = { clients, players, time };

@@ -1,18 +1,9 @@
-const { send, sendAllPlayers, term } = require("./misc.js");
+const { send, sendAll, sendAllPlayers, term, auth, getPlayer, getPlayerClean } = require("./misc.js");
 let Global = require("./global.js");
 
-function auth(conn, msg) {
-  let player = Global.players.find(player => player.secrets.key === msg.key);
 
-  if (player) {
-    if (player.secrets.conn !== conn) {
-      if (player.online) term(player.secrets.conn, "You have connected on another device");
-      player.secrets.conn = conn;
-      player.online = true;
-    }
-  }
-
-  return player;
+function evt(id) {
+  sendAll("evt", getPlayerClean(id));
 }
 
 function privMsg(p, r, msg) {
@@ -59,7 +50,7 @@ const actions = {
   state: (conn, msg) => {
     let player = auth(conn, msg);
     let state = {
-      players: Global.getPlayers(),
+      players: getPlayers(),
       time: Global.time
     };
     if (player) {
@@ -77,11 +68,25 @@ const actions = {
     let player = auth(conn, msg);
     if (!player) return term(conn, "Invalid key");
     
-    if (player.id === msg.recipient) return;
-    let recipient = Global.getPlayer(msg.recipient);
+    if (player.id === msg.recipient) return send(conn, "err", "You cannot message yourself");
+    let recipient = getPlayer(msg.recipient);
 
     if (recipient) return privMsg(player, recipient, msg.msg);
     globalMsg(player, msg.msg);
+  },
+
+  move: (conn, msg) => {
+    let player = auth(conn, msg);
+    if (!player) return term(conn, "Invalid key");
+    if (player.ap < 1) return send(conn, "err", "You have no Action Points");
+    
+    let {x, z} = msg;
+
+    if (typeof(x) === "number" && Math.abs(x) === 1) player.x += x;
+    if (typeof(y) === "number" && Math.abs(y) === 1) player.y += y;
+    player.ap--;
+
+    evt(player.id);
   }
 }
 

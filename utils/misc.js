@@ -26,4 +26,35 @@ function term(conn, reason) {
   conn.close();
 }
 
-module.exports = { send, sendAll, sendAllPlayers, term };
+function auth(conn, msg) {
+  let player = Global.players.find(player => player.secrets.key === msg.key);
+
+  if (player) {
+    if (player.secrets.conn !== conn) {
+      if (player.online) term(player.secrets.conn, "You have connected on another device");
+      player.secrets.conn = conn;
+      conn.id = player.id;
+      player.online = true;
+    }
+  }
+  return player;
+}
+
+function currentTime() {
+  let offset = new Date().getTimezoneOffset() * 6e4 + 2.16e7;
+  let ms = (Date.now() - offset) % 8.64e7;
+  return ms / 8.64e7 * 360;
+}
+
+function getPlayers() {
+  return Global.players.map(({ secrets, ...r }) => r);
+}
+function getPlayer(id) {
+  return Global.players.find(player => player.id === id);
+}
+function getPlayerClean(id) {
+  let player = getPlayer(id);
+  return (({secrets, ...r}) => r)(player);
+}
+
+module.exports = { send, sendAll, sendAllPlayers, term, auth, currentTime, getPlayers, getPlayer, getPlayerClean };

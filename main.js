@@ -3,7 +3,7 @@
 const Config = require("./secrets/config.json");
 const { httpServer, server } = require("./utils/server.js");
 const serverMain = require("./utils/server_main.js");
-const { sendAll } = require("./utils/misc.js");
+const { sendAll, currentTime } = require("./utils/misc.js");
 let Global = require("./utils/global.js");
 
 server.on("request", serverMain);
@@ -18,6 +18,6 @@ Server started!
 `);
 
 setInterval(() => {
-  Global.time = Global.setTime();
+  Global.time = currentTime();
   sendAll("time", Global.time);
 }, 60000);
