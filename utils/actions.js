@@ -1,5 +1,5 @@
 const Config = require("../secrets/config.json");
-const { send, sendAll, sendAllPlayers, term, auth, getPlayer, getPlayerClean } = require("./misc.js");
+const { send, sendAll, sendAllPlayers, term, auth, getPlayers, getPlayer, getPlayerClean } = require("./misc.js");
 let Global = require("./global.js");
 
 

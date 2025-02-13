@@ -37,8 +37,8 @@ for (let i of Config.players) {
   players.push({
     id: i,
     online: false,
-    x: Math.floor(Math.random() * 16),
-    z: Math.floor(Math.random() * 16),
+    x: Math.floor(Math.random() * Config.players.length),
+    z: Math.floor(Math.random() * Config.players.length),
     c: Math.floor(Math.random() * 0xffffff),
     name: i,
     hp: 3,
