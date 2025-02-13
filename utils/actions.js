@@ -1,3 +1,4 @@
+const Config = require("../secrets/config.json");
 const { send, sendAll, sendAllPlayers, term, auth, getPlayer, getPlayerClean } = require("./misc.js");
 let Global = require("./global.js");
 
@@ -14,6 +15,8 @@ function privMsg(p, r, msg) {
   if (!rm[p.id]) rm[p.id] = [];
   pm[r.id].push(`${r.name}: ${msg}`);
   rm[p.id].push(`${p.name}: ${msg}`);
+  while (pm[r.id].length > Config.maxMsgs) pm[r.id].shift();
+  while (rm[p.id].length > Config.maxMsgs) rm[p.id].shift();
 
   send(p.secrets.conn, "msg", {
     id: r.id,
@@ -33,6 +36,7 @@ function globalMsg(p, msg) {
     let rm = r.secrets.msgs;
     if (!rm.global) rm.global = [];
     rm.global.push(msg);
+    while (rm.global.length > Config.maxMsgs) rm.global.shift();
   };
 
   sendAllPlayers("msg", {
@@ -67,7 +71,7 @@ const actions = {
   msg: (conn, msg) => {
     let player = auth(conn, msg);
     if (!player) return term(conn, "Invalid key");
-    
+
     if (player.id === msg.recipient) return send(conn, "err", "You cannot message yourself");
     let recipient = getPlayer(msg.recipient);
 
@@ -79,7 +83,7 @@ const actions = {
     let player = auth(conn, msg);
     if (!player) return term(conn, "Invalid key");
     if (player.ap < 1) return send(conn, "err", "You have no Action Points");
-    
+
     let {x, z} = msg;
 
     if (typeof(x) === "number" && Math.abs(x) === 1) player.x += x;

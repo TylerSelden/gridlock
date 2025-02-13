@@ -27,6 +27,9 @@ function term(conn, reason) {
 }
 
 function auth(conn, msg) {
+  // if they're already signed in
+  if (conn.id) return getPlayer(conn.id);
+
   let player = Global.players.find(player => player.secrets.key === msg.key);
 
   if (player) {
