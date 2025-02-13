@@ -25,17 +25,11 @@ function getPlayerClean(id) {
 // generate players
 console.log(`Join codes:
   |`);
-
-let dev = {
-  "Test": "kcrmnq",
-  "Test 2": "kcrmn2"
-}
 for (let i of Config.players) {
-  let key = dev[i] || Crypto.randomUUID();
+  let key = Crypto.randomUUID();
 
-  //// remove dev above, make id random uuid
   players.push({
-    id: i,
+    id: Crypto.randomUUID(),
     online: false,
     x: Math.floor(Math.random() * Config.players.length),
     z: Math.floor(Math.random() * Config.players.length),

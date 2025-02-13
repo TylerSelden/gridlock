@@ -46,11 +46,6 @@ function globalMsg(p, msg) {
 }
 
 const actions = {
-  //// remove ping function
-  ping: (conn, msg) => {
-    console.log(msg);
-    send(conn, "ping", "pong");
-  },
   state: (conn, msg) => {
     let player = auth(conn, msg);
     let state = {
