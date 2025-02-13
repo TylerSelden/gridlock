@@ -11,6 +11,7 @@ export class Game {
     this.textures = textures;
     this.players = [];
     this.time = 0;
+    this.initialized = false;
   }
   static async create() {
     // get async data beforehand
@@ -21,7 +22,9 @@ export class Game {
     return new Game(textures);
   }
 
-  init(s) {
+  init(players) {
+    let s = players.length;
+
     this.scene = this.createScene(s);
     this.scene.add(new Objects.Board(s, s));
 
@@ -35,10 +38,13 @@ export class Game {
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(window.innerWidth, window.innerHeight);
-    })
+    });
 
-    this.createPlayers(12);
-    for (let player of this.players) this.scene.add(player.obj);
+    for (let p of players) {
+      p = new Objects.Player(p.x, p.z, p.c, p.name, p.hp, p.ap, p.rp);
+      this.players.push(p);
+      this.scene.add(p.obj);
+    }
 
     // arrow notation to preserve `this`
     this.renderer.setAnimationLoop(() => {
@@ -47,6 +53,7 @@ export class Game {
 
 
     document.getElementById("loading").classList.add("hidden");
+    this.initialized = true;
   }
 
   createScene(s) {
@@ -90,16 +97,6 @@ export class Game {
     document.body.appendChild(renderer.domElement);
 
     return renderer;
-  }
-
-  createPlayers(n) {
-    for (let i = 0; i < n; i++) {
-      let x = Math.floor(Math.random() * 16);
-      let y = Math.floor(Math.random() * 16);
-      let c = Math.floor(Math.random() * 0xffffff);
-      let player = new Objects.Player(x, y, c, `Player ${i}`, 3, 1, 8);
-      this.players.push(player);
-    }
   }
 
   createLights(s) {
