@@ -43,13 +43,14 @@ function getMesh(x, y) {
   const intersects = ray.intersectObjects(window.Game.scene.children, true);
   for (let i in intersects) {
     let obj = intersects[i].object;
+    let id = intersects[i].instanceId;
 
     if (obj.name === "player") {
       obj.parent.visible = !obj.parent.visible;
       break;
-    } else if (obj.name === "block") {
-      console.log(obj.userData);
-      obj.material.forEach(material => material.color.set(0xee2222))
+    } else if (obj.name === "board") {
+      obj.setColorAt(id, new THREE.Color(Math.random() * 0xffffff));
+      obj.instanceColor.needsUpdate = true;
       break;
     }
   }

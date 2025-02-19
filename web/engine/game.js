@@ -27,7 +27,7 @@ export class Game {
     let s = players.length;
 
     this.scene = this.createScene(s);
-    this.scene.add(new Objects.Board(s, s));
+    this.scene.add(new Objects.Board(s));
 
     this.renderer = this.createRenderer();
     this.camera = this.createCamera(s);

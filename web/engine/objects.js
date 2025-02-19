@@ -38,13 +38,26 @@ export class Block {
 }
 
 export class Board {
-  constructor(w, d) {
-    let group = new THREE.Group();
-    for (let x = 0; x < w; x++) {
-      for (let z = 0; z < d; z++) {
-        group.add(new Block(x, z));
-      }
+  constructor(s) {
+    let geo = new THREE.BoxGeometry(0.925, 0.05, 0.925);
+    let mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    let mesh = new THREE.InstancedMesh(geo, mat, s*s);
+    mesh.name = "board";
+
+    let matrix = new THREE.Matrix4();
+    for (let i = 0; i < s*s; i++) {
+      matrix.setPosition(new THREE.Vector3(i % s, 0.05, Math.floor(i / s)));
+      mesh.setMatrixAt(i, matrix);
     }
+
+    let group = new THREE.Group();
+    let base = new Box(s, 0.05, s, 0x666666);
+    base.position.x += s / 2 - 0.5;
+    base.position.z += s / 2 - 0.5;
+
+    group.add(mesh);
+    group.add(base);
+
     return group;
   }
 }
