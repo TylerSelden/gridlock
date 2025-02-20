@@ -37,20 +37,30 @@ const rayCoord = new THREE.Vector2();
 function getMesh(x, y) {
   rayCoord.x = (x / window.innerWidth) * 2 - 1;
   rayCoord.y = -(y / window.innerHeight) * 2 + 1;
-
   ray.setFromCamera(rayCoord, window.Game.camera);
 
   const intersects = ray.intersectObjects(window.Game.scene.children, true);
   for (let i in intersects) {
     let obj = intersects[i].object;
-    let id = intersects[i].instanceId;
 
     if (obj.name === "player") {
-      alert(obj.userData.id);
-      obj.parent.visible = !obj.parent.visible;
+      let p = window.Game.players[obj.userData.id];
+      let r = p.rp;
+
+      let spaces = [];
+      for (let x = p.x - r; x <= p.x + r; x++) {
+        if (x < 0 || x > window.Game.board.size - 1) continue;
+        for (let z = p.z - r; z <= p.z + r; z++) {
+          if (z < 0 || z > window.Game.board.size - 1) continue;
+          let inst = z * window.Game.size + x;
+
+          window.Game.board.blocks.setColorAt(inst, new THREE.Color(0xff3333));
+          window.Game.board.blocks.instanceColor.needsUpdate = true;
+        }
+      }
       break;
     } else if (obj.name === "board") {
-      obj.setColorAt(id, new THREE.Color(Math.random() * 0xffffff));
+      obj.setColorAt(intersects[i].instanceId, new THREE.Color(Math.random() * 0xffffff));
       obj.instanceColor.needsUpdate = true;
       break;
     }

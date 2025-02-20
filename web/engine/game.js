@@ -27,7 +27,8 @@ export class Game {
     let s = players.length;
 
     this.scene = this.createScene(s);
-    this.scene.add(new Objects.Board(s));
+    this.board = new Objects.Board(s);
+    this.scene.add(this.board.group);
 
     this.renderer = this.createRenderer();
     this.camera = this.createCamera(s);
@@ -175,13 +176,13 @@ export class Game {
   }
 
   spotLightsOn() {
-    for (let player of this.players) {
-      player.light.on();
+    for (let i in this.players) {
+      this.players[i].light.on();
     }
   }
   spotLightsOff() {
-    for (let player of this.players) {
-      player.light.off();
+    for (let i in this.players) {
+      this.players[i].light.off();
     }
   }
 

@@ -28,27 +28,27 @@ export class Box {
 
 export class Board {
   constructor(s) {
+    this.size = s;
+
     let geo = new THREE.BoxGeometry(0.925, 0.05, 0.925);
     let mat = new THREE.MeshStandardMaterial({ color: 0xffffff });
-    let mesh = new THREE.InstancedMesh(geo, mat, s*s);
-    mesh.receiveShadow = true;
-    mesh.name = "board";
+    this.blocks = new THREE.InstancedMesh(geo, mat, s*s);
+    this.blocks.receiveShadow = true;
+    this.blocks.name = "board";
 
     let matrix = new THREE.Matrix4();
     for (let i = 0; i < s*s; i++) {
       matrix.setPosition(new THREE.Vector3(i % s, 0.05, Math.floor(i / s)));
-      mesh.setMatrixAt(i, matrix);
+      this.blocks.setMatrixAt(i, matrix);
     }
 
-    let group = new THREE.Group();
-    let base = new Box(s, 0.05, s, 0x666666);
-    base.position.x += s / 2 - 0.5;
-    base.position.z += s / 2 - 0.5;
+    this.base = new Box(s, 0.05, s, 0x666666);
+    this.base.position.x += s / 2 - 0.5;
+    this.base.position.z += s / 2 - 0.5;
 
-    group.add(mesh);
-    group.add(base);
-
-    return group;
+    this.group = new THREE.Group();
+    this.group.add(this.blocks);
+    this.group.add(this.base);
   }
 }
 
