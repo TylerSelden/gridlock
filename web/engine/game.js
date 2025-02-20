@@ -10,7 +10,7 @@ import * as Events from "./events.js";
 export class Game {
   constructor(textures) {
     this.textures = textures;
-    this.players = [];
+    this.players = {};
     this.time = 0;
     this.initialized = false;
   }
@@ -39,7 +39,7 @@ export class Game {
 
     for (let p of players) {
       p = new Objects.Player(p.x, p.z, p.c, p.name, p.id, p.hp, p.ap, p.rp);
-      this.players.push(p);
+      this.players[p.id] = p;
       this.scene.add(p.obj);
     }
 
