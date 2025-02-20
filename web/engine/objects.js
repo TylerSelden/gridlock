@@ -26,22 +26,12 @@ export class Box {
   }
 }
 
-export class Block {
-  constructor(x, z) {
-    let base = new Box(1, 0.05, 1, 0x666666);
-    let platform = new Box(0.925, 0.05, 0.925, 0xffffff, false, "block");
-    platform.position.y += 0.05;
-    platform.userData = { x, z };
-
-    return new Group([ base, platform ], x, null, z);
-  }
-}
-
 export class Board {
   constructor(s) {
     let geo = new THREE.BoxGeometry(0.925, 0.05, 0.925);
-    let mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    let mat = new THREE.MeshStandardMaterial({ color: 0xffffff });
     let mesh = new THREE.InstancedMesh(geo, mat, s*s);
+    mesh.receiveShadow = true;
     mesh.name = "board";
 
     let matrix = new THREE.Matrix4();
@@ -64,11 +54,13 @@ export class Board {
 
 
 export class Player {
-  constructor(x, z, c, name, hp, ap, rp) {
+  constructor(x, z, c, name, id, hp, ap, rp) {
     this.c = c;
     this.name = name;
+    this.id = id;
 
     let box = new Box(0.85, 0.4, 0.85, c, true, "player");
+    box.userData.id = id;
     this.light = new SpotLight(0, 0);
     this.obj = new Group([ box, this.light.obj, this.light.obj.target, this.light.cone ], x, 0.275, z);
     this.gen = new TextureGenerator(1024, 1024, c);

@@ -38,7 +38,7 @@ export class Game {
     Events.init(this.renderer.domElement);
 
     for (let p of players) {
-      p = new Objects.Player(p.x, p.z, p.c, p.name, p.hp, p.ap, p.rp);
+      p = new Objects.Player(p.x, p.z, p.c, p.name, p.id, p.hp, p.ap, p.rp);
       this.players.push(p);
       this.scene.add(p.obj);
     }
@@ -80,7 +80,7 @@ export class Game {
     return controls;
   }
   createRenderer() {
-    let renderer = new THREE.WebGLRenderer({ antialias: true });
+    let renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
  
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;

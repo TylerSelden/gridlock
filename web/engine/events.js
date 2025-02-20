@@ -46,6 +46,7 @@ function getMesh(x, y) {
     let id = intersects[i].instanceId;
 
     if (obj.name === "player") {
+      alert(obj.userData.id);
       obj.parent.visible = !obj.parent.visible;
       break;
     } else if (obj.name === "board") {
