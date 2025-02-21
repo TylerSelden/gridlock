@@ -1,5 +1,10 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
+import  { GammaCorrectionShader } from 'three/addons/shaders/GammaCorrectionShader.js';
 
 import * as Objects from "./objects.js";
 import * as Loader from "./loader.js";
@@ -44,6 +49,9 @@ export class Game {
       this.scene.add(p.obj);
     }
 
+
+    this.setupPostProcessing();
+
     // arrow notation to preserve `this`
     this.renderer.setAnimationLoop(() => {
       this.render();
@@ -52,6 +60,27 @@ export class Game {
 
     document.getElementById("loading").classList.add("hidden");
     this.initialized = true;
+  }
+
+  setupPostProcessing() {
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.addPass(new RenderPass(this.scene, this.camera));
+    this.composer.addPass(new ShaderPass(GammaCorrectionShader));
+
+    this.outlinePass = new OutlinePass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      this.scene,
+      this.camera
+    );
+
+//    this.outlinePass.selectedObjects = Object.values(this.players).map(player => player.obj);
+
+    this.composer.addPass(this.outlinePass);
+    this.outlinePass.edgeStrength = 5.0;
+    this.outlinePass.edgeGlow = 0.0;
+    this.outlinePass.edgeThickness = 2.0;
+    this.outlinePass.visibleEdgeColor.set('#ffffff');
+    this.outlinePass.hiddenEdgeColor.set('#190a05');
   }
 
   createScene(s) {
@@ -188,6 +217,7 @@ export class Game {
 
   render() {
     this.controls.update();
-    this.renderer.render(this.scene, this.camera);
+    this.composer.render();
+//    this.renderer.render(this.scene, this.camera);
   }
 }

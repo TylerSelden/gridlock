@@ -46,6 +46,7 @@ function getMesh(x, y) {
     if (obj.name === "player") {
       let id = obj.userData.id;
       let p = window.Game.players[id];
+      let selectedObjects = window.Game.outlinePass.selectedObjects;
 
       if (!selected[id]) {
         selected[id] = {
@@ -55,8 +56,10 @@ function getMesh(x, y) {
           x2: p.x + p.rp,
           z2: p.z + p.rp
         }
+        selectedObjects.push(p.obj);
       } else {
         delete selected[id];
+        selectedObjects.splice(selectedObjects.find(obj => obj.id === id), 1);
       }
 
       handleSelected();

@@ -59,10 +59,10 @@ export class Player {
     this.name = name;
     this.id = id;
 
-    let box = new Box(0.85, 0.4, 0.85, c, true, "player");
-    box.userData.id = id;
+    this.mesh = new Box(0.85, 0.4, 0.85, c, true, "player");
+    this.mesh.userData.id = id;
     this.light = new SpotLight(0, 0);
-    this.obj = new Group([ box, this.light.obj, this.light.obj.target, this.light.cone ], x, 0.275, z);
+    this.obj = new Group([ this.mesh, this.light.obj, this.light.obj.target, this.light.cone ], x, 0.275, z);
     this.gen = new TextureGenerator(1024, 1024, c);
 
     this.update(x, z, hp, ap, rp);
