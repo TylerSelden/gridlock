@@ -44,20 +44,22 @@ function getMesh(x, y) {
     let obj = intersects[i].object;
 
     if (obj.name === "player") {
-      let p = window.Game.players[obj.userData.id];
-      let r = p.rp;
+      let id = obj.userData.id;
+      let p = window.Game.players[id];
 
-      let spaces = [];
-      for (let x = p.x - r; x <= p.x + r; x++) {
-        if (x < 0 || x > window.Game.board.size - 1) continue;
-        for (let z = p.z - r; z <= p.z + r; z++) {
-          if (z < 0 || z > window.Game.board.size - 1) continue;
-          let inst = z * window.Game.size + x;
-
-          window.Game.board.blocks.setColorAt(inst, new THREE.Color(0xff3333));
-          window.Game.board.blocks.instanceColor.needsUpdate = true;
+      if (!selected[id]) {
+        selected[id] = {
+          r: p.rp,
+          x1: p.x - p.rp,
+          z1: p.z - p.rp,
+          x2: p.x + p.rp,
+          z2: p.z + p.rp
         }
+      } else {
+        delete selected[id];
       }
+
+      handleSelected();
       break;
     } else if (obj.name === "board") {
       obj.setColorAt(intersects[i].instanceId, new THREE.Color(Math.random() * 0xffffff));
@@ -65,4 +67,28 @@ function getMesh(x, y) {
       break;
     }
   }
+}
+
+let selected = [];
+
+function handleSelected() {
+  const s = window.Game.board.size;
+  let color = new THREE.Color();
+
+  for (let i = 0; i < s*s; i++) {
+    let x = i % s;
+    let z = Math.floor(i / s);
+    for (let j in selected) {
+      let b = selected[j];
+      if (x >= b.x1 && x <= b.x2 && z >= b.z1 && z <= b.z2) {
+        color.setHex(0xff0000);
+        break;
+      } else {
+        color.setHex(0xffffff);
+      }
+    }
+    window.Game.board.blocks.setColorAt(i, color);
+  }
+
+  window.Game.board.blocks.instanceColor.needsUpdate = true;
 }
