@@ -62,8 +62,7 @@ function getMesh(x, y) {
       handleSelected();
       break;
     } else if (obj.name === "board") {
-      obj.setColorAt(intersects[i].instanceId, new THREE.Color(Math.random() * 0xffffff));
-      obj.instanceColor.needsUpdate = true;
+      // move player to that point, if applicable
       break;
     }
   }
